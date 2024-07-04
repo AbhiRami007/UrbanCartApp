@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from "react";
 import {
-  TouchableOpacity,
   View,
   Text,
   StyleSheet,
@@ -36,6 +35,7 @@ const HomePage = () => {
 
   const [data, setData] = useState(initialData);
   const [isLoading, setIsLoading] = useState(false);
+  const [cart, setCart] = useState([]);
 
   const loadMoreData = useCallback(() => {
     if (isLoading) return;
@@ -68,6 +68,11 @@ const HomePage = () => {
     }, 1500);
   }, [data, isLoading]);
 
+  const addToCart = (item) => {
+    setCart([...cart, item]);
+    console.log("Item added to cart:", item);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.content}>
@@ -91,7 +96,9 @@ const HomePage = () => {
         <FlatList
           data={data}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <CardComponent item={item} />}
+          renderItem={({ item }) => (
+            <CardComponent item={item} addToCart={addToCart} />
+          )}
           numColumns={2}
           onEndReached={loadMoreData}
           onEndReachedThreshold={0.5}
@@ -110,6 +117,7 @@ const { width, height } = Dimensions.get("window");
 const styles = StyleSheet.create({
   container: {
     width: width,
+    flex: 1,
   },
   content: {
     backgroundColor: "#4c669f",
@@ -152,5 +160,6 @@ const styles = StyleSheet.create({
   },
   products: {
     marginTop: 50,
+    flex: 1,
   },
 });
