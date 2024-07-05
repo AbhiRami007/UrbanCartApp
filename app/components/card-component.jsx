@@ -7,10 +7,10 @@ const CardComponent = ({ item, addToCart }) => {
   return (
     <View style={styles.cardContainer}>
       <Card style={styles.card}>
-        <Card.Cover source={item.image} />
+        <Card.Cover source={{ uri: item.image }} />
         <Card.Title title={item.title} />
         <Card.Content>
-          <Text>{item.description}</Text>
+          <Text style={styles.description}>{item.description}</Text>
           <Button title="Add to Cart" onPress={() => addToCart(item)} />
         </Card.Content>
       </Card>
@@ -25,6 +25,9 @@ const styles = StyleSheet.create({
   },
   card: {
     width: "100%",
+  },
+  description: {
+    marginBottom: 10,
   },
 });
 

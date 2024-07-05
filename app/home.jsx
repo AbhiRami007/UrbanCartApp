@@ -8,34 +8,47 @@ import {
   TextInput,
   FlatList,
   ActivityIndicator,
+  Modal,
+  TouchableOpacity,
 } from "react-native";
 import CardComponent from "./components/card-component";
+import Cart from "./components/cart";
 
 const HomePage = () => {
   const initialData = [
     {
       id: "1",
-      image: require("../assets/avatar.png"),
-      title: "Card 1",
-      description: "This is the first card",
+      image:
+        "https://m.media-amazon.com/images/I/4109t2-iaPL._AC_UF1000,1000_QL80_.jpg",
+      title: "Price: $1.5/lb",
+      description: "Tomato",
     },
     {
       id: "2",
-      image: require("../assets/favicon.png"),
-      title: "Card 2",
-      description: "This is the second card",
+      image:
+        "https://www.crimsoncoward.com/wp-content/uploads/2023/05/potatoes-scaled.jpg",
+      title: "Price: $0.75/lb",
+      description: "Potato",
     },
     {
       id: "3",
-      image: require("../assets/icon.png"),
-      title: "Card 3",
-      description: "This is the third card",
+      image:
+        "https://assets.shop.loblaws.ca/products/20768660/b2/en/front/20768660_front_a06_@2.png",
+      title: "Price: $20/lb",
+      description: "Vegetable Oil",
+    },
+    {
+      id: "4",
+      image: "https://m.media-amazon.com/images/I/61uOR7f-7kL.jpg",
+      title: "Price: $4/lb",
+      description: "Vegetable Oil",
     },
   ];
 
   const [data, setData] = useState(initialData);
   const [isLoading, setIsLoading] = useState(false);
   const [cart, setCart] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const loadMoreData = useCallback(() => {
     if (isLoading) return;
@@ -46,21 +59,30 @@ const HomePage = () => {
       const moreData = [
         {
           id: `${data.length + 1}`,
-          image: require("../assets/avatar.png"),
-          title: `Card ${data.length + 1}`,
-          description: `This is card ${data.length + 1}`,
+          image:
+            "https://m.media-amazon.com/images/I/4109t2-iaPL._AC_UF1000,1000_QL80_.jpg",
+          title: "Price: $1.5/lb",
+          description: "Tomato",
         },
         {
           id: `${data.length + 2}`,
-          image: require("../assets/favicon.png"),
-          title: `Card ${data.length + 2}`,
-          description: `This is card ${data.length + 2}`,
+          image:
+            "https://www.crimsoncoward.com/wp-content/uploads/2023/05/potatoes-scaled.jpg",
+          title: "Price: $0.75/lb",
+          description: "Potato",
         },
         {
           id: `${data.length + 3}`,
-          image: require("../assets/icon.png"),
-          title: `Card ${data.length + 3}`,
-          description: `This is card ${data.length + 3}`,
+          image:
+            "https://assets.shop.loblaws.ca/products/20768660/b2/en/front/20768660_front_a06_@2.png",
+          title: "Price: $20/lb",
+          description: "Vegetable Oil",
+        },
+        {
+          id: `${data.length + 4}`,
+          image: "https://m.media-amazon.com/images/I/61uOR7f-7kL.jpg",
+          title: "Price: $4/lb",
+          description: "Vegetable Oil",
         },
       ];
       setData([...data, ...moreData]);
@@ -73,11 +95,23 @@ const HomePage = () => {
     console.log("Item added to cart:", item);
   };
 
+  const removeFromCart = (item) => {
+    const updatedCart = cart.filter((cartItem) => cartItem.id !== item.id);
+    setCart(updatedCart);
+  };
+
+  const toggleModal = () => {
+    setModalVisible(!modalVisible);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.content}>
         <View style={styles.header}>
           <Text style={styles.text}>Welcome</Text>
+          <TouchableOpacity onPress={toggleModal}>
+            <Image source={require("../assets/cart.png")} style={styles.cart} />
+          </TouchableOpacity>
           <Image
             source={require("../assets/avatar.png")}
             style={styles.avatar}
@@ -107,6 +141,20 @@ const HomePage = () => {
           }
         />
       </View>
+
+      {/* Modal for Cart */}
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={modalVisible}
+        onRequestClose={toggleModal}
+      >
+        <Cart
+          cartItems={cart}
+          removeFromCart={removeFromCart}
+          toggleModal={toggleModal}
+        />
+      </Modal>
     </View>
   );
 };
@@ -124,14 +172,19 @@ const styles = StyleSheet.create({
     borderBottomEndRadius: 30,
     borderBottomStartRadius: 30,
     height: height * 0.2,
+    padding: 10,
   },
   header: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    margin: 10,
+    alignItems: "center",
   },
   avatar: {
+    width: 40,
+    height: 40,
+  },
+  cart: {
     width: 40,
     height: 40,
   },
@@ -144,22 +197,22 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "#fff",
     textAlign: "center",
+    marginBottom: 10,
   },
   input: {
-    position: "absolute",
-    top: height * 0.15,
-    left: width * 0.05,
     backgroundColor: "#fff",
     borderColor: "#4c669f",
     borderWidth: 0.5,
     padding: 15,
     borderRadius: 5,
     fontSize: 16,
-    color: "#fff",
-    width: width * 0.9,
+    color: "#000",
+    width: "100%",
+    marginBottom: 10,
+    marginTop: 20,
   },
   products: {
-    marginTop: 50,
     flex: 1,
+    padding: 10,
   },
 });
