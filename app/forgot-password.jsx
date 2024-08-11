@@ -1,4 +1,4 @@
-import { useRouter } from "expo-router";
+import { useNavigation } from "expo-router";
 import React, { useState } from "react";
 import {
   View,
@@ -11,8 +11,8 @@ import {
   Alert,
 } from "react-native";
 
-const ForgotPasswordScreen = ({ navigation }) => {
-  const router = useRouter();
+const ForgotPasswordScreen = () => {
+  const navigation = useNavigation();
   const [email, setEmail] = useState("");
 
   const validateEmail = (email) => {
@@ -38,7 +38,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
       [
         {
           text: "OK",
-          onPress: () => navigation.navigate("Login"),
+          onPress: () => navigation.navigate("login"),
         },
       ]
     );
@@ -48,7 +48,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
   };
 
   const handleLogin = () => {
-    router.push("/");
+    navigation.navigate("login")
   };
 
   return (

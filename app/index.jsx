@@ -8,12 +8,13 @@ import {
   Image,
   Alert,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter, useNavigation } from "expo-router";
 
-const SignIn = ({ navigation }) => {
-  const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+const SignIn = () => {
+  // const router = useRouter();
+  const navigation = useNavigation();
+  const [email, setEmail] = useState("psabhirami015@gmail.com");
+  const [password, setPassword] = useState("abhi@123");
   const testUser = { email: "psabhirami015@gmail.com", password: "abhi@123" };
 
   const handleLogin = () => {
@@ -28,24 +29,26 @@ const SignIn = ({ navigation }) => {
       Alert.alert("Error", "Email or Password is incorrect");
       return;
     }
-    router.push("/home");
+    navigation.navigate("home");
   };
 
   const handleForgotPassword = () => {
     // Implement your forgot password logic here
     console.log("Forgot password pressed");
-    router.push({
-      pathname: "/forgot-password",
-    });
+    navigation.navigate("forgot-password");
+    // router.push({
+    //   pathname: "/forgot-password",
+    // });
   };
 
   const handleSignUp = () => {
     // Implement your sign up navigation logic here
 
     console.log("Sign up pressed");
-    router.push({
-      pathname: "/sign-up",
-    });
+    navigation.navigate("sign-up")
+    // router.push({
+    //   pathname: "/sign-up",
+    // });
   };
 
   return (

@@ -12,9 +12,15 @@ import {
   TouchableOpacity,
 } from "react-native";
 import CardComponent from "./components/card-component";
-import Cart from "./components/cart";
+import { Ionicons } from '@expo/vector-icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToCart } from './redux/slices/cartSlice';
+import { useNavigation } from "expo-router";
 
 const HomePage = () => {
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart.items);
   const initialData = [
     {
       id: "1",
@@ -90,8 +96,9 @@ const HomePage = () => {
     }, 1500);
   }, [data, isLoading]);
 
-  const addToCart = (item) => {
+  const addToCartAction = (item) => {
     setCart([...cart, item]);
+    dispatch(addToCart(item));
     console.log("Item added to cart:", item);
   };
 
@@ -103,58 +110,99 @@ const HomePage = () => {
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
+  console.log(cartItems)
+  // return (
+  //   <View style={styles.container}>
+  //     <View style={styles.content}>
+  //       <View style={styles.header}>
+  //         <Text style={styles.text}>Welcome</Text>
+  //         <TouchableOpacity onPress={toggleModal}>
+  //           <Image source={require("../assets/cart.png")} style={styles.cart} />
+  //         </TouchableOpacity>
+  //         <Image
+  //           source={require("../assets/avatar.png")}
+  //           style={styles.avatar}
+  //         />
+  //       </View>
+  //       <Text style={styles.searchText}>
+  //         Search for products you wish to buy today
+  //       </Text>
+  //       <TextInput
+  //         style={styles.input}
+  //         placeholder="Search.."
+  //         placeholderTextColor="#ccc"
+  //       />
+  //     </View>
+  //     <View style={styles.products}>
+  //       <FlatList
+  //         data={data}
+  //         keyExtractor={(item) => item.id}
+  //         renderItem={({ item }) => (
+  //           <CardComponent item={item} addToCart={addToCart} />
+  //         )}
+  //         numColumns={2}
+  //         onEndReached={loadMoreData}
+  //         onEndReachedThreshold={0.5}
+  //         ListFooterComponent={
+  //           isLoading && <ActivityIndicator size="large" color="#0000ff" />
+  //         }
+  //       />
+  //     </View>
 
+  //     {/* Modal for Cart */}
+  //     <Modal
+  //       animationType="slide"
+  //       transparent={false}
+  //       visible={modalVisible}
+  //       onRequestClose={toggleModal}
+  //     >
+  //       <Cart
+  //         cartItems={cart}
+  //         removeFromCart={removeFromCart}
+  //         toggleModal={toggleModal}
+  //       />
+  //     </Modal>
+  //   </View>
+  // );
   return (
     <View style={styles.container}>
-      <View style={styles.content}>
-        <View style={styles.header}>
-          <Text style={styles.text}>Welcome</Text>
-          <TouchableOpacity onPress={toggleModal}>
-            <Image source={require("../assets/cart.png")} style={styles.cart} />
+      <View style={styles.header}>
+        <Text style={styles.title}>UrbanCart</Text>        
+        <View style={styles.icons}>
+          <TouchableOpacity onPress={() => navigation.navigate('profile')}>
+            <Ionicons name="person-circle" size={30} color="black" />
           </TouchableOpacity>
-          <Image
-            source={require("../assets/avatar.png")}
-            style={styles.avatar}
-          />
+          <TouchableOpacity onPress={() => navigation.navigate('cart')}>
+            <Ionicons name="cart" size={30} color="black" />
+            {cartItems.length > 0 && (
+              <View style={styles.cartBadge}>
+                <Text style={styles.cartBadgeText}>{cartItems.length}</Text>
+              </View>
+            )}
+          </TouchableOpacity>
         </View>
-        <Text style={styles.searchText}>
-          Search for products you wish to buy today
-        </Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Search.."
-          placeholderTextColor="#ccc"
-        />
       </View>
-      <View style={styles.products}>
-        <FlatList
-          data={data}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <CardComponent item={item} addToCart={addToCart} />
-          )}
-          numColumns={2}
-          onEndReached={loadMoreData}
-          onEndReachedThreshold={0.5}
-          ListFooterComponent={
-            isLoading && <ActivityIndicator size="large" color="#0000ff" />
-          }
-        />
-      </View>
-
-      {/* Modal for Cart */}
-      <Modal
-        animationType="slide"
-        transparent={false}
-        visible={modalVisible}
-        onRequestClose={toggleModal}
-      >
-        <Cart
-          cartItems={cart}
-          removeFromCart={removeFromCart}
-          toggleModal={toggleModal}
-        />
-      </Modal>
+      <TextInput style={styles.searchBar} placeholder="Search products..." />
+      <FlatList
+        data={data}
+        keyExtractor={(item) => item.id}
+        numColumns={2}
+        renderItem={({ item }) => (
+          <CardComponent item={item} addToCart={addToCartAction} />
+          // <TouchableOpacity
+          //   style={styles.productItem}
+          //   // onPress={() => navigation.navigate('ProductDetail', { product: item })}
+          // >
+          //   <Image source={{ uri: item.image }} style={styles.productImage} />
+          //   <Text style={styles.productName}>{item.title}</Text>
+          // </TouchableOpacity>
+        )}
+        onEndReached={loadMoreData}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={
+          isLoading && <ActivityIndicator size="large" color="#0000ff" />
+        }
+      />
     </View>
   );
 };
@@ -162,57 +210,118 @@ const HomePage = () => {
 export default HomePage;
 
 const { width, height } = Dimensions.get("window");
+// const styles = StyleSheet.create({
+//   container: {
+//     width: width,
+//     flex: 1,
+//   },
+//   content: {
+//     backgroundColor: "#4c669f",
+//     borderBottomEndRadius: 30,
+//     borderBottomStartRadius: 30,
+//     height: height * 0.2,
+//     padding: 10,
+//   },
+//   header: {
+//     display: "flex",
+//     flexDirection: "row",
+//     justifyContent: "space-between",
+//     alignItems: "center",
+//   },
+//   avatar: {
+//     width: 40,
+//     height: 40,
+//   },
+//   cart: {
+//     width: 40,
+//     height: 40,
+//   },
+//   text: {
+//     fontSize: 24,
+//     fontWeight: "bold",
+//     color: "#fff",
+//   },
+//   searchText: {
+//     fontSize: 18,
+//     color: "#fff",
+//     textAlign: "center",
+//     marginBottom: 10,
+//   },
+//   input: {
+//     backgroundColor: "#fff",
+//     borderColor: "#4c669f",
+//     borderWidth: 0.5,
+//     padding: 15,
+//     borderRadius: 5,
+//     fontSize: 16,
+//     color: "#000",
+//     width: "100%",
+//     marginBottom: 10,
+//     marginTop: 20,
+//   },
+//   products: {
+//     flex: 1,
+//     padding: 10,
+//   },
+// });
+
 const styles = StyleSheet.create({
   container: {
-    width: width,
     flex: 1,
-  },
-  content: {
-    backgroundColor: "#4c669f",
-    borderBottomEndRadius: 30,
-    borderBottomStartRadius: 30,
-    height: height * 0.2,
-    padding: 10,
+    backgroundColor: '#fff',
   },
   header: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    padding: 16,
+    backgroundColor: '#f8f8f8',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
-  avatar: {
-    width: 40,
-    height: 40,
-  },
-  cart: {
-    width: 40,
-    height: 40,
-  },
-  text: {
+  title: {
     fontSize: 24,
-    fontWeight: "bold",
-    color: "#fff",
+    fontWeight: 'bold',
   },
-  searchText: {
-    fontSize: 18,
-    color: "#fff",
-    textAlign: "center",
-    marginBottom: 10,
+  tagline: {
+    fontSize: 14,
+    color: '#666',
   },
-  input: {
-    backgroundColor: "#fff",
-    borderColor: "#4c669f",
-    borderWidth: 0.5,
-    padding: 15,
-    borderRadius: 5,
-    fontSize: 16,
-    color: "#000",
-    width: "100%",
-    marginBottom: 10,
-    marginTop: 20,
+  icons: {
+    flexDirection: 'row',
   },
-  products: {
+  searchBar: {
+    margin: 16,
+    padding: 8,
+    borderColor: '#ddd',
+    borderWidth: 1,
+    borderRadius: 4,
+  },
+  productItem: {
     flex: 1,
-    padding: 10,
+    margin: 8,
+    padding: 16,
+    backgroundColor: '#f9f9f9',
+    alignItems: 'center',
+    borderRadius: 4,
+  },
+  productImage: {
+    width: 100,
+    height: 100,
+    marginBottom: 8,
+  },
+  productName: {
+    fontSize: 16,
+  },
+  cartBadge: {
+    position: 'absolute',
+    right: -10,
+    top: -10,
+    backgroundColor: 'red',
+    borderRadius: 10,
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+  },
+  cartBadgeText: {
+    color: 'white',
+    fontSize: 12,
   },
 });

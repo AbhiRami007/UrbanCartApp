@@ -1,4 +1,4 @@
-import { useRouter } from "expo-router";
+import { useNavigation } from "expo-router";
 import React, { useState } from "react";
 import {
   View,
@@ -13,7 +13,7 @@ import {
 } from "react-native";
 
 const SignUp = () => {
-  const router = useRouter();
+  const navigation = useNavigation();
   const [fullName, setFullName] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
   const [email, setEmail] = useState("");
@@ -48,11 +48,13 @@ const SignUp = () => {
 
     // If all validations pass, proceed with sign up
     console.log("Sign up successful");
+    navigation.navigate("home");
     // Implement your sign up logic here
   };
 
   const handleSignIn = () => {
-    router.push("/");
+    // router.push("/");
+    navigation.navigate("login");
   };
 
   return (
