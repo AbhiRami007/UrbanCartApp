@@ -18,6 +18,7 @@ import ProfileScreen from "./profile";
 import SettingsScreen from "./settings";
 import { Provider } from 'react-redux';
 import store from './redux/store';
+import MyOrderScreen from "./myorder";
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -32,7 +33,7 @@ const DrawerNavigator = () => {
       <Drawer.Screen name="cart" component={CartScreen} options={{ drawerLabel: 'Cart' }} />
       
       <Drawer.Screen name="profile" component={ProfileScreen} options={{ drawerLabel: 'Profile' }} />
-      <Drawer.Screen name="my-order" component={SettingsScreen} options={{ drawerLabel: 'My Order' }} />
+      <Drawer.Screen name="my-order" component={MyOrderScreen} options={{ drawerLabel: 'My Order' }} />
       <Drawer.Screen name="settings" component={SettingsScreen} options={{ drawerLabel: 'Settings' }} />  
       {/* <Drawer.Screen name="checkout" component={CheckoutStackNavigator} options={{ drawerLabel: () => null, title: null, drawerIcon: () => null }} />     */}
     </Drawer.Navigator>
